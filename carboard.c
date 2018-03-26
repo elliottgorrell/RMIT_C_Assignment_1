@@ -6,8 +6,7 @@
 
 #include "carboard.h"
 
-int main()
-{
+int main() {
   printf(
   "Welcome to Car Board\n"
   "--------------------\n"
@@ -16,21 +15,21 @@ int main()
   "3. Quit\n\n");
 
   char choice[1];
-  int finished = 0;
+  Boolean finished = FALSE;
 
-  while ( !finished ){
+  while ( !finished ) {
     printf("Please enter your choice:\n");
 
     scanf("%s",&choice);
 
     if (choice[0] == '1'){
-      printf("Not yet implemented\n");
+      showGameControls();
     }
     else if (choice[0] == '2'){
       showStudentInformation();
     }
     else if (choice[0] == '3'){
-      finished = 1;
+      finished = TRUE;
     }
 
     printf("\n");
@@ -42,11 +41,25 @@ int main()
   return EXIT_SUCCESS;
 }
 
-void showStudentInformation()
-{
+void showStudentInformation() {
     printf("----------------------------------\n");
     printf("Name: %s\n", STUDENT_NAME);
     printf("Name: %s\n", STUDENT_ID);
     printf("Name: %s\n", STUDENT_EMAIL);
     printf("----------------------------------\n");
+}
+
+void showGameControls() {
+  printf(
+    "You can use the following commands to play the game:\n"
+    "load <g>\n"
+    "\tg: number of the game board to load\n"
+    "init <x>,<y>,<direction>\n"
+    "\tx: horizontal position of the car on the board (between 0 & 9)\n"
+    "\ty: vertical position of the car on the board (between 0 & 9)\n"
+    "\tdirection: direction of the car’s movement (north, east, south, west)\n"
+    "forward (or f)\n"
+    "turn_left (or l)\n"
+    "turn_right (or r)\n"
+    "quit\n");
 }
