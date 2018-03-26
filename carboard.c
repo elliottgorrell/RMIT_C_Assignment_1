@@ -7,6 +7,10 @@
 #include "carboard.h"
 
 int main() {
+  int choice = NULL;
+  char *buffer;
+  Boolean finished = FALSE;
+
   printf(
   "Welcome to Car Board\n"
   "--------------------\n"
@@ -14,22 +18,22 @@ int main() {
   "2. Show student’s information\n"
   "3. Quit\n\n");
 
-  char choice[1];
-  Boolean finished = FALSE;
 
   while ( !finished ) {
     printf("Please enter your choice:\n");
 
-    scanf("%s",&choice);
 
-    if (choice[0] == '1'){
+    fgets(buffer,50,stdin);
+    sscanf(buffer, "%d", &choice);
+
+    if (choice == 1){
       showGameControls();
       playGame();
     }
-    else if (choice[0] == '2'){
+    else if (choice == 2){
       showStudentInformation();
     }
-    else if (choice[0] == '3'){
+    else if (choice == 3){
       finished = TRUE;
     }
 
