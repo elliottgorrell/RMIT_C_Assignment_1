@@ -24,6 +24,7 @@ int main() {
 
     if (choice[0] == '1'){
       showGameControls();
+      playGame();
     }
     else if (choice[0] == '2'){
       showStudentInformation();

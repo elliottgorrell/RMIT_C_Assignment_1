@@ -36,13 +36,23 @@ Cell BOARD_2[BOARD_HEIGHT][BOARD_WIDTH] =
 
 void initialiseBoard(Cell board[BOARD_HEIGHT][BOARD_WIDTH])
 {
-    /* TODO */
+  int y,x;
+  for (y=0; y < BOARD_HEIGHT; y++) {
+    for (x=0; x < BOARD_WIDTH; x++){
+      board[y][x] = EMPTY;
+    }
+  }
 }
 
 void loadBoard(Cell board[BOARD_HEIGHT][BOARD_WIDTH],
                Cell boardToLoad[BOARD_HEIGHT][BOARD_WIDTH])
 {
-    /* TODO */
+  int y,x;
+  for (y=0; y < BOARD_HEIGHT; y++) {
+    for (x=0; x < BOARD_WIDTH; x++){
+      board[y][x] = boardToLoad[y][x];
+    }
+  }
 }
 
 Boolean placePlayer(Cell board[BOARD_HEIGHT][BOARD_WIDTH], Position position)
@@ -60,5 +70,37 @@ PlayerMove movePlayerForward(Cell board[BOARD_HEIGHT][BOARD_WIDTH],
 
 void displayBoard(Cell board[BOARD_HEIGHT][BOARD_WIDTH], Player * player)
 {
-    /* TODO */
+  int y,x;
+  for (y=-1; y < BOARD_HEIGHT; y++) {
+    for (x=-1; x < BOARD_WIDTH; x++){
+      printf("|");
+
+      if(x == -1 && y == -1) {
+        printf(EMPTY_OUTPUT);
+      }
+
+      else if(y == -1) {
+        printf("%d",x);
+      }
+
+      else if(x == -1) {
+        printf("%d",y);
+      }
+
+      else {
+        Cell state = board[y][x];
+        if (state == EMPTY) {
+          printf(EMPTY_OUTPUT);
+        }
+        else if(state == BLOCKED){
+          printf(BLOCKED_OUTPUT);
+        }
+      }
+
+    }
+    printf("|");
+    printf("\n");
+  }
+  printf("\n");
+
 }
