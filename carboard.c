@@ -1,6 +1,6 @@
 /******************************************************************************
-** Student name: 	...
-** Student number: 	...
+** Student name: 	Elliott Gorrell
+** Student number: 	s3452258
 ** Course: 			Advanced Programming Techniques - S1 2018
 ******************************************************************************/
 
