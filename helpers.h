@@ -35,5 +35,6 @@ typedef enum boolean
  * function when this has happened.
  **/
 void readRestOfLine();
+void clearInputStream();
 
 #endif

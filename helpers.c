@@ -15,3 +15,10 @@ void readRestOfLine()
     /* Reset the error status of the stream. */
     clearerr(stdin);
 }
+
+void clearInputStream(&buffer)
+{
+  int n = strlen(buffer);
+  if (n > 0 && buffer[n - 1] != '\n')
+    readRestOfLine();
+}

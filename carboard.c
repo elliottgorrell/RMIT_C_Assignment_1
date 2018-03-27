@@ -23,8 +23,10 @@ int main() {
     printf("Please enter your choice:\n");
 
 
-    fgets(buffer,50,stdin);
+    fgets(buffer,10,stdin);
     sscanf(buffer, "%d", &choice);
+
+    clearInputStream(buffer);
 
     if (choice == 1){
       showGameControls();
