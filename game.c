@@ -7,16 +7,18 @@
 #include "game.h"
 
 char buffer[20];
+char tmpBuffer[20];
 char *command= NULL;
 char *token = NULL;
 char *arg1 = NULL;
-char *arg2 = 0;
-char arg3[10];
+char *arg2 = NULL;
+char *arg3 = NULL;
 
 void playGame()
 {
     Cell board[BOARD_HEIGHT][BOARD_WIDTH];
-
+    /* Allow args in command to be seperated with a space or comma */
+    char delimiter[] = ", \n";
     Boolean finished = FALSE;
 
     initialiseBoard(board);
@@ -26,12 +28,14 @@ void playGame()
 
     while ( !finished ) {
       printf("What you wanna do:\n");
-      fgets(buffer,20,stdin);
-      command = strtok(buffer," ");
 
+      fgets(buffer,20,stdin);
+      strcpy(&tmpBuffer, &buffer);
+
+      command = strtok(tmpBuffer,delimiter);
 
       if (strcmp(command, COMMAND_LOAD) == 0) {
-        arg1 = strtok(NULL, " ");
+        arg1 = strtok(NULL, delimiter);
 
         /* If we don't have a valid integer we will get returned 0 by atoi so will fall through to else conditional */
         int boardNumber = atoi(arg1);
@@ -49,15 +53,38 @@ void playGame()
         }
       }
 
+      else if (strcmp(command, COMMAND_INIT) == 0) {
+        arg1 = strtok(NULL, delimiter);
+        arg2 = strtok(NULL, delimiter);
+        arg3 = strtok(NULL, delimiter);
 
+        printf("x: %s, y: %s, direction: %s",arg1,arg2,arg3);
 
+        if (arg1 == NULL || arg2 == NULL || arg3 == NULL) {
+          printf("input for 'init' command must be in the format 'init x,y,direction' or 'init x y direction' ");
+        }
+
+        else{
+          int x = atoi(arg1);
+          int y = atoi(arg2);
+          char *direction = arg3;
+
+          printf("x: %d, y: %d, direction: %s",x,y,direction);
+        }
+      }
+
+      else if (strcmp(command, "quit") == 0) {
+        printf("Sending you back to the main menu...\n\n");
+        finished = TRUE;
+      }
 
       else {
         printf("Invalid Command\n");
       }
 
-      clearGlobals();
       clearInputStream(buffer);
+      clearGlobals();
+
 
     }
 }
