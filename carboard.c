@@ -39,6 +39,7 @@ int main() {
     }
 
     memset(&buffer[0], 0, sizeof(buffer));
+    choice = 0;
 
   }
 
