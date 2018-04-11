@@ -7,8 +7,8 @@
 #include "carboard.h"
 
 int main() {
-  int choice = NULL;
-  char *buffer;
+  int choice = 0;
+  char buffer[5];
   Boolean finished = FALSE;
 
   printf(
@@ -22,8 +22,7 @@ int main() {
   while ( !finished ) {
     printf("Please enter your choice:\n");
 
-
-    fgets(buffer,10,stdin);
+    fgets(buffer,5,stdin);
     sscanf(buffer, "%d", &choice);
 
     clearInputStream(buffer);
@@ -39,7 +38,7 @@ int main() {
       finished = TRUE;
     }
 
-    printf("\n");
+    memset(&buffer[0], 0, sizeof(buffer));
 
   }
 
