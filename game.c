@@ -6,25 +6,19 @@
 
 #include "game.h"
 
+char buffer[20];
+char *command= NULL;
+char *token = NULL;
+char *arg1 = NULL;
+char *arg2 = 0;
+char arg3[10];
+
 void playGame()
 {
     Cell board[BOARD_HEIGHT][BOARD_WIDTH];
 
-    char buffer[20];
-    char command[10];
-    char *token;
-    char arg1[3];
-    char arg2[3];
-    char arg3[10];
     Boolean finished = FALSE;
 
-    /* TODO */
-    /**
-     * This is some sample code using the functions provided.
-     *
-     * Note that NULL is passed as the "Player * player" parameter as there is
-     * no player cell present on the board in this example.
-     */
     initialiseBoard(board);
     displayBoard(board, NULL);
 
@@ -32,68 +26,46 @@ void playGame()
 
     while ( !finished ) {
       printf("What you wanna do:\n");
-      fgets(buffer, 20, stdin);
+      fgets(buffer,20,stdin);
+      command = strtok(buffer," ");
 
-      token = strtok(buffer," ");
-      strncpy(command, token, strlen(token));
 
-      if (strcmp("quit", command) == 0){
-        printf("User quit");
-      }
+      if (strcmp(command, COMMAND_LOAD) == 0) {
+        arg1 = strtok(NULL, " ");
 
-      else if (strcmp("load", command) == 0){
-        token = strtok(NULL, ",");
-        if (strlen(token) > 1){
-          incorrectInput();
-        }
-        else{
-          strncpy(arg1, token, strlen(token));
+        /* If we don't have a valid integer we will get returned 0 by atoi so will fall through to else conditional */
+        int boardNumber = atoi(arg1);
+
+        if (boardNumber == 1) {
           loadBoard(board, BOARD_1);
           displayBoard(board, NULL);
         }
-      }
-
-      else if (strcmp("init", command) == 0){
-        token = strtok(NULL, ",");
-        if (strlen(token) > 1){
-          incorrectInput();
+        else if (boardNumber == 2) {
+          loadBoard(board, BOARD_2);
+          displayBoard(board, NULL);
         }
         else {
-          strncpy(arg1, token, strlen(token));
+          printf("Command must be 'load 1' or 'load 2'\n");
         }
-
-        token = strtok(NULL, ",");
-        if (strlen(token) > 1){
-          incorrectInput();
-        }
-        else {
-          strncpy(arg2, token, strlen(token));
-        }
-
-        token = strtok(NULL, ",");
-        strncpy(arg3, token, 10);
       }
 
 
 
 
+      else {
+        printf("Invalid Command\n");
+      }
 
-
-
-      printf("%s %s %s %s\n",command, arg1, arg2, arg3);
-
-      memset(&buffer[0], 0, sizeof(buffer));
-      memset(&token[0], 0, sizeof(token));
-      memset(&arg1[0], 0, sizeof(arg1));
-      memset(&arg2[0], 0, sizeof(arg2));
-      memset(&arg3[0], 0, sizeof(arg3));
+      clearGlobals();
+      clearInputStream(buffer);
 
     }
-
-    loadBoard(board, BOARD_1);
-    displayBoard(board, NULL);
 }
 
-void incorrectInput() {
-  printf("INVALID INPUT!\n");
+void clearGlobals(){
+  memset(&buffer[0], 0, sizeof(buffer));
+  if (command) memset(&command[0], 0, sizeof(command));
+  if (arg1) memset(&arg1[0], 0, sizeof(arg1));
+  if (arg2) memset(&arg2[0], 0, sizeof(arg2));
+  if (arg3) memset(&arg3[0], 0, sizeof(arg3));
 }

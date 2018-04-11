@@ -39,6 +39,6 @@
  * Note that if you don't break this function up it could become pretty big...
  */
 void playGame();
-void incorrectInput();
+void clearGlobals();
 
 #endif
