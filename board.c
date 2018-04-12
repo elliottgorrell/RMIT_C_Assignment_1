@@ -65,11 +65,25 @@ Boolean placePlayer(Cell board[BOARD_HEIGHT][BOARD_WIDTH], Position position)
     return TRUE;
 }
 
-PlayerMove movePlayerForward(Cell board[BOARD_HEIGHT][BOARD_WIDTH],
-                             Player * player)
+PlayerMove movePlayerForward(Cell board[BOARD_HEIGHT][BOARD_WIDTH], Player * player)
 {
-    /* TODO */
-    return PLAYER_MOVED;
+    Position newPosition = getNextForwardPosition(player);
+
+
+    if (newPosition.x <0 || newPosition.x > (BOARD_WIDTH-1) || newPosition.y > (BOARD_HEIGHT-1) || newPosition.y < 0 ){
+      return OUTSIDE_BOUNDS;
+    }
+
+    else if ( board[newPosition.y][newPosition.x] == BLOCKED) {
+      return CELL_BLOCKED;
+    }
+
+    else {
+      board[newPosition.y][newPosition.x] = PLAYER;
+      updatePosition(player, newPosition);
+      return PLAYER_MOVED;
+    }
+
 }
 
 void displayBoard(Cell board[BOARD_HEIGHT][BOARD_WIDTH], Player * player)

@@ -32,20 +32,41 @@ void turnDirection(Player * player, TurnDirection turnDirection)
         else {
           player->direction += 1;
         }
+        break;
     }
 }
 
 Position getNextForwardPosition(const Player * player)
 {
-    /* TODO */
     Position position;
+    int yIncrementer = 0;
+    int xIncrementer = 0;
+
+    switch(player->direction){
+      case NORTH :
+        yIncrementer = 1;
+        break;
+      case SOUTH :
+        yIncrementer = -1;
+        break;
+      case EAST :
+        xIncrementer = 1;
+        break;
+      case WEST :
+        xIncrementer = -1;
+        break;
+    }
+
+    position.x = (xIncrementer > 0) ? player->position.x + xIncrementer : player->position.x - xIncrementer;
+    position.y = (yIncrementer > 0) ? player->position.y + yIncrementer : player->position.y - yIncrementer;
+
 
     return position;
 }
 
 void updatePosition(Player * player, Position position)
 {
-    /* TODO */
+    player->position = position;
 }
 
 void displayDirection(Direction direction)

@@ -31,7 +31,15 @@ void playGame()
       if (!command) goto play_game;
 
       if (strcmp(command, COMMAND_FORWARD) == 0 || strcmp(command, COMMAND_FORWARD_SHORTCUT) == 0) {
-        printf("TODO");
+        PlayerMove moveResult;
+        moveResult = movePlayerForward(board, &player);
+        switch(moveResult){
+          case OUTSIDE_BOUNDS:
+            printf(RED "You can't go outside the map bounds\n" RESET);
+            break;
+          case CELL_BLOCKED:
+            printf(RED "You can't enter a blocked cell\n" RESET);
+        }
       }
 
       else if ( (strcmp(command, COMMAND_TURN_LEFT) == 0) || (strcmp(command, COMMAND_TURN_LEFT_SHORTCUT) == 0) ) {
