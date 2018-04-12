@@ -51,7 +51,7 @@ void playGame()
       }
 
       else {
-        printf("Invalid Command\n");
+        printf(RED "Invalid Command\n" RESET);
         commandSucceeded = FALSE;
       }
 
@@ -68,6 +68,11 @@ void playGame()
 }
 
 Boolean loadBoardCommand(Cell board[BOARD_HEIGHT][BOARD_WIDTH], char * arg1){
+  if (arg1 == NULL) {
+    printf(RED "must provide a board number\n" RESET);
+    return FALSE;
+  }
+
   /* If we don't have a valid integer we will get returned 0 by atoi so will fall through to else conditional */
   int boardNumber = atoi(arg1);
 
@@ -78,7 +83,7 @@ Boolean loadBoardCommand(Cell board[BOARD_HEIGHT][BOARD_WIDTH], char * arg1){
     loadBoard(board, BOARD_2);
   }
   else {
-    printf("Command must be 'load 1' or 'load 2'\n");
+    printf(RED "Command must be 'load 1' or 'load 2'\n" RESET);
     return FALSE;
   }
 
@@ -87,7 +92,7 @@ Boolean loadBoardCommand(Cell board[BOARD_HEIGHT][BOARD_WIDTH], char * arg1){
 
 Boolean initBoardCommand(char * arg1, char * arg2, char * arg3, Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
   if (arg1 == NULL || arg2 == NULL || arg3 == NULL) {
-    printf("input for 'init' command must be in the format 'init x,y,direction' or 'init x y direction'\n");
+    printf(RED "input for 'init' command must be in the format 'init x,y,direction' or 'init x y direction'\n" RESET);
     return FALSE;
   }
 
@@ -101,14 +106,18 @@ Boolean initBoardCommand(char * arg1, char * arg2, char * arg3, Player * player,
 
   Direction startingDirection;
   if (strcmp(direction, DIRECTION_NORTH) == 0) startingDirection = NORTH;
-  if (strcmp(direction, DIRECTION_SOUTH) == 0) startingDirection = SOUTH;
-  if (strcmp(direction, DIRECTION_EAST) == 0) startingDirection = EAST;
-  if (strcmp(direction, DIRECTION_WEST) == 0) startingDirection = WEST;
+  else if (strcmp(direction, DIRECTION_SOUTH) == 0) startingDirection = SOUTH;
+  else if (strcmp(direction, DIRECTION_EAST) == 0) startingDirection = EAST;
+  else if (strcmp(direction, DIRECTION_WEST) == 0) startingDirection = WEST;
+  else {
+    printf(RED "Direction must be one of: 'north' 'east' 'south' 'west'\n" RESET);
+    return FALSE;
+  }
 
 
-  initialisePlayer(&player, &initialPosition, startingDirection);
+  initialisePlayer(player, &initialPosition, startingDirection);
   if ( !placePlayer(board, initialPosition) ) {
-    printf("FAILED! You cannot place player at a blocked or out of bound cell!\n");
+    printf(RED "FAILED! You cannot place player at a blocked or out of bound cell!\n" RESET);
     return FALSE;
   }
   return TRUE;
