@@ -17,9 +17,11 @@ char *arg3 = NULL;
 void playGame()
 {
     Cell board[BOARD_HEIGHT][BOARD_WIDTH];
+    Player player;
     /* Allow args in command to be seperated with a space or comma */
     char delimiter[] = ", \n";
     Boolean finished = FALSE;
+    Boolean gameStarted = FALSE;
 
     initialiseBoard(board);
     displayBoard(board, NULL);
@@ -42,11 +44,9 @@ void playGame()
 
         if (boardNumber == 1) {
           loadBoard(board, BOARD_1);
-          displayBoard(board, NULL);
         }
         else if (boardNumber == 2) {
           loadBoard(board, BOARD_2);
-          displayBoard(board, NULL);
         }
         else {
           printf("Command must be 'load 1' or 'load 2'\n");
@@ -58,10 +58,8 @@ void playGame()
         arg2 = strtok(NULL, delimiter);
         arg3 = strtok(NULL, delimiter);
 
-        printf("x: %s, y: %s, direction: %s",arg1,arg2,arg3);
-
         if (arg1 == NULL || arg2 == NULL || arg3 == NULL) {
-          printf("input for 'init' command must be in the format 'init x,y,direction' or 'init x y direction' ");
+          printf("input for 'init' command must be in the format 'init x,y,direction' or 'init x y direction'\n");
         }
 
         else{
@@ -69,7 +67,22 @@ void playGame()
           int y = atoi(arg2);
           char *direction = arg3;
 
-          printf("x: %d, y: %d, direction: %s",x,y,direction);
+          Position initialPosition;
+          initialPosition.x = x;
+          initialPosition.y = y;
+
+          Direction startingDirection;
+          if (strcmp(direction, DIRECTION_NORTH) == 0) startingDirection = NORTH;
+          if (strcmp(direction, DIRECTION_SOUTH) == 0) startingDirection = SOUTH;
+          if (strcmp(direction, DIRECTION_EAST) == 0) startingDirection = EAST;
+          if (strcmp(direction, DIRECTION_WEST) == 0) startingDirection = WEST;
+
+
+          initialisePlayer(&player, &initialPosition, startingDirection);
+          if ( !placePlayer(board, initialPosition) ) {
+            printf("FAILED! You cannot place player at a blocked or out of bound cell!\n");
+          }
+
         }
       }
 
@@ -81,6 +94,8 @@ void playGame()
       else {
         printf("Invalid Command\n");
       }
+
+      displayBoard(board, &player);
 
       clearInputStream(buffer);
       clearGlobals();

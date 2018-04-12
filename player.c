@@ -8,7 +8,9 @@
 
 void initialisePlayer(Player * player, Position * position, Direction direction)
 {
-    /* TODO */
+    player->position = *position;
+    player->direction = direction;
+    player->moves = 0;
 }
 
 void turnDirection(Player * player, TurnDirection turnDirection)

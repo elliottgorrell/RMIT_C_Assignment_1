@@ -57,8 +57,12 @@ void loadBoard(Cell board[BOARD_HEIGHT][BOARD_WIDTH],
 
 Boolean placePlayer(Cell board[BOARD_HEIGHT][BOARD_WIDTH], Position position)
 {
-    /* TODO */
-    return FALSE;
+    if (board[position.y][position.x] != EMPTY) {
+      return FALSE;
+    }
+
+    board[position.y][position.x] = PLAYER;
+    return TRUE;
 }
 
 PlayerMove movePlayerForward(Cell board[BOARD_HEIGHT][BOARD_WIDTH],
@@ -91,6 +95,12 @@ void displayBoard(Cell board[BOARD_HEIGHT][BOARD_WIDTH], Player * player)
         Cell state = board[y][x];
         if (state == EMPTY) {
           printf(EMPTY_OUTPUT);
+        }
+        if (state == PLAYER) {
+          if (player->direction == NORTH) printf(DIRECTION_ARROW_OUTPUT_NORTH);
+          else if (player->direction == SOUTH) printf(DIRECTION_ARROW_OUTPUT_SOUTH);
+          else if (player->direction == EAST) printf(DIRECTION_ARROW_OUTPUT_EAST);
+          else if (player->direction == WEST) printf(DIRECTION_ARROW_OUTPUT_WEST);
         }
         else if(state == BLOCKED){
           printf(BLOCKED_OUTPUT);
