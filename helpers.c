@@ -16,7 +16,7 @@ void readRestOfLine()
     clearerr(stdin);
 }
 
-void clearInputStream(char *buffer)
+void clearInputStream(char * buffer)
 {
   /* If there is no newline present in buffer than there must be more in stdin */
   if ( !strchr(buffer, '\n') )
