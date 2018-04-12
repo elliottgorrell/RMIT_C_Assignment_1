@@ -97,10 +97,7 @@ void displayBoard(Cell board[BOARD_HEIGHT][BOARD_WIDTH], Player * player)
           printf(EMPTY_OUTPUT);
         }
         if (state == PLAYER) {
-          if (player->direction == NORTH) printf(DIRECTION_ARROW_OUTPUT_NORTH);
-          else if (player->direction == SOUTH) printf(DIRECTION_ARROW_OUTPUT_SOUTH);
-          else if (player->direction == EAST) printf(DIRECTION_ARROW_OUTPUT_EAST);
-          else if (player->direction == WEST) printf(DIRECTION_ARROW_OUTPUT_WEST);
+          displayDirection(player->direction);
         }
         else if(state == BLOCKED){
           printf(BLOCKED_OUTPUT);

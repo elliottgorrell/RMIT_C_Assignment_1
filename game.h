@@ -39,6 +39,7 @@
  * Note that if you don't break this function up it could become pretty big...
  */
 void playGame();
+Boolean setupGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]);
 Boolean loadBoardCommand(Cell board[BOARD_HEIGHT][BOARD_WIDTH], char * arg1);
 Boolean initBoardCommand(char * arg1, char * arg2, char * arg3, Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]);
 

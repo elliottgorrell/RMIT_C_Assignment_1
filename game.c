@@ -10,61 +10,94 @@ void playGame()
 {
     Cell board[BOARD_HEIGHT][BOARD_WIDTH];
     Player player;
-    /* Allow args in command to be seperated with a space or comma */
-    char delimiter[] = ", \n";
-    Boolean finished = FALSE;
-    Boolean commandSucceeded = FALSE;
 
-    char buffer[20];
-    char tmpBuffer[20];
-    char *command= NULL;
-    char *arg1 = NULL;
-    char *arg2 = NULL;
-    char *arg3 = NULL;
+    Boolean finished = FALSE;
+
+    char buffer[10];
+    char *command = NULL;
 
     initialiseBoard(board);
-    displayBoard(board, NULL);
 
+    Boolean completedSetup = setupGame(&player, board);
 
     while ( !finished ) {
-      printf("What you wanna do:\n");
+      fgets(buffer,10,stdin);
+      sscanf(buffer, "%s", command);
 
-      fgets(buffer,20,stdin);
-      strncpy(tmpBuffer, buffer, 20);
+      if (strcmp(command, COMMAND_FORWARD) == 0) {
 
-      command = strtok(tmpBuffer,delimiter);
-      arg1 = strtok(NULL, delimiter);
-      arg2 = strtok(NULL, delimiter);
-      arg3 = strtok(NULL, delimiter);
-
-      if (strcmp(command, COMMAND_LOAD) == 0) {
-        commandSucceeded = loadBoardCommand(board, arg1);
       }
-
-      else if (strcmp(command, COMMAND_INIT) == 0) {
-        commandSucceeded = initBoardCommand(arg1, arg2, arg3, &player, board);
-      }
-
-      else if (strcmp(command, "quit") == 0) {
-        printf("Sending you back to the main menu...\n\n");
-        finished = TRUE;
-      }
-
-      else {
-        printf(RED "Invalid Command\n" RESET);
-        commandSucceeded = FALSE;
-      }
-
-      if (commandSucceeded) displayBoard(board, &player);
-
-      clearInputStream(&buffer);
-
-      memset(&buffer[0], 0, sizeof(buffer));
-      if (command) memset(&command[0], 0, sizeof(command));
-      if (arg1) memset(&arg1[0], 0, sizeof(arg1));
-      if (arg2) memset(&arg2[0], 0, sizeof(arg2));
-      if (arg3) memset(&arg3[0], 0, sizeof(arg3));
     }
+
+
+}
+
+Boolean setupGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
+  /* Allow args in command to be seperated with a space or comma */
+  char delimiter[] = ", \n";
+  Boolean finished = FALSE;
+  Boolean boardLoaded = FALSE;
+  Boolean setupComplete = FALSE;
+
+  char buffer[20];
+  char tmpBuffer[20];
+  char *command= NULL;
+  char *arg1 = NULL;
+  char *arg2 = NULL;
+  char *arg3 = NULL;
+
+  displayBoard(board, NULL);
+
+  run: while ( !finished ) {
+    Boolean commandSucceeded = FALSE;
+    printf("What you wanna do:\n");
+
+    fgets(buffer,20,stdin);
+    strncpy(tmpBuffer, buffer, 20);
+
+    command = strtok(tmpBuffer,delimiter);
+    arg1 = strtok(NULL, delimiter);
+    arg2 = strtok(NULL, delimiter);
+    arg3 = strtok(NULL, delimiter);
+
+    if (strcmp(command, COMMAND_LOAD) == 0) {
+      commandSucceeded = loadBoardCommand(board, arg1);
+      if (commandSucceeded) boardLoaded = TRUE;
+    }
+
+    else if (strcmp(command, COMMAND_INIT) == 0) {
+      if (!boardLoaded) {
+        printf( RED "You need to load a board first\n" RESET);
+        goto run;
+      }
+      commandSucceeded = initBoardCommand(arg1, arg2, arg3, &player, board);
+      if (commandSucceeded) {
+        finished = TRUE;
+        setupComplete = TRUE;
+      }
+    }
+
+    else if (strcmp(command, "quit") == 0) {
+      printf("Sending you back to the main menu...\n\n");
+      finished = TRUE;
+    }
+
+    else {
+      printf(RED "Invalid Command\n" RESET);
+      commandSucceeded = FALSE;
+    }
+
+    if (commandSucceeded) displayBoard(board, &player);
+
+    clearInputStream(&buffer);
+
+    memset(&buffer[0], 0, sizeof(buffer));
+    if (command) memset(&command[0], 0, sizeof(command));
+    if (arg1) memset(&arg1[0], 0, sizeof(arg1));
+    if (arg2) memset(&arg2[0], 0, sizeof(arg2));
+    if (arg3) memset(&arg3[0], 0, sizeof(arg3));
+  }
+  return setupComplete;
 }
 
 Boolean loadBoardCommand(Cell board[BOARD_HEIGHT][BOARD_WIDTH], char * arg1){

@@ -33,5 +33,8 @@ void updatePosition(Player * player, Position position)
 
 void displayDirection(Direction direction)
 {
-    /* TODO */
+  if (direction == NORTH) printf(DIRECTION_ARROW_OUTPUT_NORTH);
+  else if (direction == SOUTH) printf(DIRECTION_ARROW_OUTPUT_SOUTH);
+  else if (direction == EAST) printf(DIRECTION_ARROW_OUTPUT_EAST);
+  else if (direction == WEST) printf(DIRECTION_ARROW_OUTPUT_WEST);
 }
