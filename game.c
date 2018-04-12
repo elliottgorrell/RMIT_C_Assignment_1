@@ -13,20 +13,47 @@ void playGame()
 
     Boolean finished = FALSE;
 
-    char buffer[10];
-    char *command = NULL;
+    char buffer[15];
+    char tmpBuffer[15];
+    char * command;
 
     initialiseBoard(board);
 
     Boolean completedSetup = setupGame(&player, board);
 
-    while ( !finished ) {
-      fgets(buffer,10,stdin);
-      sscanf(buffer, "%s", command);
+    play_game: while ( !finished ) {
+      printf("Make a move:\n");
 
-      if (strcmp(command, COMMAND_FORWARD) == 0) {
+      fgets(buffer,15,stdin);
+      strncpy(tmpBuffer, buffer, 15);
+      command = strtok(tmpBuffer,"\n\r");
 
+      if (!command) goto play_game;
+
+      if (strcmp(command, COMMAND_FORWARD) == 0 || strcmp(command, COMMAND_FORWARD_SHORTCUT) == 0) {
+        printf("TODO");
       }
+
+      else if ( (strcmp(command, COMMAND_TURN_LEFT) == 0) || (strcmp(command, COMMAND_TURN_LEFT_SHORTCUT) == 0) ) {
+        turnDirection(&player, TURN_LEFT);
+      }
+
+      else if ( (strcmp(command, COMMAND_TURN_RIGHT) == 0) || (strcmp(command, COMMAND_TURN_RIGHT_SHORTCUT) == 0) ) {
+        turnDirection(&player, TURN_RIGHT);
+      }
+
+      else {
+        printf(RED "Invalid Command\n" RESET);
+      }
+
+      displayBoard(board, &player);
+      printf("%s\n", command);
+
+      clearInputStream(&buffer);
+
+      memset(&buffer[0], 0, sizeof(buffer));
+      memset(&tmpBuffer[0], 0, sizeof(tmpBuffer));
+      if (command) memset(&command[0], 0, sizeof(command));
     }
 
 
@@ -48,7 +75,7 @@ Boolean setupGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
 
   displayBoard(board, NULL);
 
-  run: while ( !finished ) {
+  run_setup: while ( !finished ) {
     Boolean commandSucceeded = FALSE;
     printf("What you wanna do:\n");
 
@@ -60,6 +87,8 @@ Boolean setupGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
     arg2 = strtok(NULL, delimiter);
     arg3 = strtok(NULL, delimiter);
 
+    if (!command) goto run_setup;
+
     if (strcmp(command, COMMAND_LOAD) == 0) {
       commandSucceeded = loadBoardCommand(board, arg1);
       if (commandSucceeded) boardLoaded = TRUE;
@@ -68,9 +97,9 @@ Boolean setupGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
     else if (strcmp(command, COMMAND_INIT) == 0) {
       if (!boardLoaded) {
         printf( RED "You need to load a board first\n" RESET);
-        goto run;
+        goto run_setup;
       }
-      commandSucceeded = initBoardCommand(arg1, arg2, arg3, &player, board);
+      commandSucceeded = initBoardCommand(arg1, arg2, arg3, player, board);
       if (commandSucceeded) {
         finished = TRUE;
         setupComplete = TRUE;
@@ -87,7 +116,7 @@ Boolean setupGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
       commandSucceeded = FALSE;
     }
 
-    if (commandSucceeded) displayBoard(board, &player);
+    if (commandSucceeded) displayBoard(board, player);
 
     clearInputStream(&buffer);
 

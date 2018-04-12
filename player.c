@@ -15,7 +15,24 @@ void initialisePlayer(Player * player, Position * position, Direction direction)
 
 void turnDirection(Player * player, TurnDirection turnDirection)
 {
-    /* TODO */
+    switch(turnDirection){
+      case TURN_LEFT :
+        if ((int) player->direction == 0) {
+          player->direction = 3;
+        }
+        else {
+          player->direction -= 1;
+        }
+        break;
+
+      case TURN_RIGHT :
+        if ((int) player->direction == 3) {
+          player->direction = 0;
+        }
+        else {
+          player->direction += 1;
+        }
+    }
 }
 
 Position getNextForwardPosition(const Player * player)
