@@ -10,6 +10,7 @@
 #include "helpers.h"
 #include "board.h"
 #include "player.h"
+#include "carboard.h"
 
 #define COMMAND_LOAD "load"
 #define COMMAND_INIT "init"
@@ -27,19 +28,20 @@
 #define DIRECTION_WEST "west"
 
 /**
- * Main menu option 1 - play the game as per the specification.
- *
- * This function makes all the calls to board & player and handles interaction
- * with the user (reading input from the console, error checking, etc...).
- *
- * It should be possible to break this function down into smaller functions -
- * but this is up to you to decide and is entirely your own design. You can
- * place the additional functions in this header file if you want.
- *
- * Note that if you don't break this function up it could become pretty big...
- */
+* Main menu option 1 - play the game as per the specification.
+*
+* This function makes all the calls to board & player and handles interaction
+* with the user (reading input from the console, error checking, etc...).
+*
+* It should be possible to break this function down into smaller functions -
+* but this is up to you to decide and is entirely your own design. You can
+* place the additional functions in this header file if you want.
+*
+* Note that if you don't break this function up it could become pretty big...
+*/
 void playGame();
 Boolean setupGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]);
+void runGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]);
 Boolean loadBoardCommand(Cell board[BOARD_HEIGHT][BOARD_WIDTH], char * arg1);
 Boolean initBoardCommand(char * arg1, char * arg2, char * arg3, Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]);
 

@@ -11,59 +11,16 @@ void playGame()
     Cell board[BOARD_HEIGHT][BOARD_WIDTH];
     Player player;
 
-    Boolean finished = FALSE;
-
-    char buffer[15];
-    char tmpBuffer[15];
-    char * command;
+    Boolean completedSetup;
 
     initialiseBoard(board);
+    completedSetup = setupGame(&player, board);
 
-    Boolean completedSetup = setupGame(&player, board);
+    /* If the player successfully setup the board start game play */
+    if (completedSetup) runGame(&player, board);
 
-    play_game: while ( !finished ) {
-      printf("Make a move:\n");
-
-      fgets(buffer,15,stdin);
-      strncpy(tmpBuffer, buffer, 15);
-      command = strtok(tmpBuffer,"\n\r");
-
-      if (!command) goto play_game;
-
-      if (strcmp(command, COMMAND_FORWARD) == 0 || strcmp(command, COMMAND_FORWARD_SHORTCUT) == 0) {
-        PlayerMove moveResult;
-        moveResult = movePlayerForward(board, &player);
-        switch(moveResult){
-          case OUTSIDE_BOUNDS:
-            printf(RED "You can't go outside the map bounds\n" RESET);
-            break;
-          case CELL_BLOCKED:
-            printf(RED "You can't enter a blocked cell\n" RESET);
-        }
-      }
-
-      else if ( (strcmp(command, COMMAND_TURN_LEFT) == 0) || (strcmp(command, COMMAND_TURN_LEFT_SHORTCUT) == 0) ) {
-        turnDirection(&player, TURN_LEFT);
-      }
-
-      else if ( (strcmp(command, COMMAND_TURN_RIGHT) == 0) || (strcmp(command, COMMAND_TURN_RIGHT_SHORTCUT) == 0) ) {
-        turnDirection(&player, TURN_RIGHT);
-      }
-
-      else {
-        printf(RED "Invalid Command\n" RESET);
-      }
-
-      displayBoard(board, &player);
-      printf("%s\n", command);
-
-      clearInputStream(&buffer);
-
-      memset(&buffer[0], 0, sizeof(buffer));
-      memset(&tmpBuffer[0], 0, sizeof(tmpBuffer));
-      if (command) memset(&command[0], 0, sizeof(command));
-    }
-
+    /* Reshow the main menu controls since we are going back there */
+    showMainMenu(&player, board);
 
 }
 
@@ -83,7 +40,7 @@ Boolean setupGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
 
   displayBoard(board, NULL);
 
-  run_setup: while ( !finished ) {
+  while ( !finished ) {
     Boolean commandSucceeded = FALSE;
     printf("What you wanna do:\n");
 
@@ -95,38 +52,39 @@ Boolean setupGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
     arg2 = strtok(NULL, delimiter);
     arg3 = strtok(NULL, delimiter);
 
-    if (!command) goto run_setup;
-
-    if (strcmp(command, COMMAND_LOAD) == 0) {
-      commandSucceeded = loadBoardCommand(board, arg1);
-      if (commandSucceeded) boardLoaded = TRUE;
-    }
-
-    else if (strcmp(command, COMMAND_INIT) == 0) {
-      if (!boardLoaded) {
-        printf( RED "You need to load a board first\n" RESET);
-        goto run_setup;
+    if (command) {
+      if (strcmp(command, COMMAND_LOAD) == 0) {
+        commandSucceeded = loadBoardCommand(board, arg1);
+        if (commandSucceeded) boardLoaded = TRUE;
       }
-      commandSucceeded = initBoardCommand(arg1, arg2, arg3, player, board);
-      if (commandSucceeded) {
+
+      else if (strcmp(command, COMMAND_INIT) == 0) {
+        if (!boardLoaded) {
+          printf( RED "You need to load a board first\n" RESET);
+        }
+        else{
+          commandSucceeded = initBoardCommand(arg1, arg2, arg3, player, board);
+          if (commandSucceeded) {
+            finished = TRUE;
+            setupComplete = TRUE;
+          }
+        }
+      }
+
+      else if (strcmp(command, COMMAND_QUIT) == 0) {
+        printf("Sending you back to the main menu...\n\n");
         finished = TRUE;
-        setupComplete = TRUE;
       }
-    }
 
-    else if (strcmp(command, "quit") == 0) {
-      printf("Sending you back to the main menu...\n\n");
-      finished = TRUE;
-    }
-
-    else {
-      printf(RED "Invalid Command\n" RESET);
-      commandSucceeded = FALSE;
+      else {
+        printf(RED "Invalid Command\n" RESET);
+        commandSucceeded = FALSE;
+      }
     }
 
     if (commandSucceeded) displayBoard(board, player);
 
-    clearInputStream(&buffer);
+    if ( !strchr(buffer, '\n') ) readRestOfLine();
 
     memset(&buffer[0], 0, sizeof(buffer));
     if (command) memset(&command[0], 0, sizeof(command));
@@ -137,14 +95,74 @@ Boolean setupGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
   return setupComplete;
 }
 
+void runGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
+  char buffer[15];
+  char tmpBuffer[15];
+  char * command;
+
+  Boolean playing = TRUE;
+
+  while ( playing ) {
+    displayBoard(board, player);
+    printf("Make a move:\n");
+
+    fgets(buffer,15,stdin);
+    strncpy(tmpBuffer, buffer, 15);
+    command = strtok(tmpBuffer,"\n\r");
+
+    if (command) {
+      if (strcmp(command, COMMAND_FORWARD) == 0 || strcmp(command, COMMAND_FORWARD_SHORTCUT) == 0) {
+        PlayerMove moveResult;
+        moveResult = movePlayerForward(board, player);
+        switch(moveResult){
+          case PLAYER_MOVED:
+            player->moves += 1;
+            break;
+          case OUTSIDE_BOUNDS:
+            printf(RED "You can't go outside the map bounds\n" RESET);
+            break;
+          case CELL_BLOCKED:
+            printf(RED "You can't enter a blocked cell\n" RESET);
+            break;
+        }
+      }
+
+      else if ( (strcmp(command, COMMAND_TURN_LEFT) == 0) || (strcmp(command, COMMAND_TURN_LEFT_SHORTCUT) == 0) ) {
+        turnDirection(player, TURN_LEFT);
+      }
+
+      else if ( (strcmp(command, COMMAND_TURN_RIGHT) == 0) || (strcmp(command, COMMAND_TURN_RIGHT_SHORTCUT) == 0) ) {
+        turnDirection(player, TURN_RIGHT);
+      }
+
+      else if ( (strcmp(command, COMMAND_QUIT) == 0) ) {
+        printf("Total moves: %d\n", player->moves);
+        printf("Quitting game..\n\n");
+        playing = FALSE;
+      }
+
+      else {
+        printf(RED "Invalid Command\n" RESET);
+      }
+    }
+
+    if ( !strchr(buffer, '\n') ) readRestOfLine();
+
+    memset(&buffer[0], 0, sizeof(buffer));
+    memset(&tmpBuffer[0], 0, sizeof(tmpBuffer));
+    if (command) memset(&command[0], 0, sizeof(command));
+  }
+}
+
 Boolean loadBoardCommand(Cell board[BOARD_HEIGHT][BOARD_WIDTH], char * arg1){
+  int boardNumber;
   if (arg1 == NULL) {
     printf(RED "must provide a board number\n" RESET);
     return FALSE;
   }
 
   /* If we don't have a valid integer we will get returned 0 by atoi so will fall through to else conditional */
-  int boardNumber = atoi(arg1);
+  boardNumber = atoi(arg1);
 
   if (boardNumber == 1) {
     loadBoard(board, BOARD_1);
@@ -161,20 +179,26 @@ Boolean loadBoardCommand(Cell board[BOARD_HEIGHT][BOARD_WIDTH], char * arg1){
 }
 
 Boolean initBoardCommand(char * arg1, char * arg2, char * arg3, Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
+  int x;
+  int y;
+  char * direction;
+  Position initialPosition;
+  Direction startingDirection;
+
   if (arg1 == NULL || arg2 == NULL || arg3 == NULL) {
     printf(RED "input for 'init' command must be in the format 'init x,y,direction' or 'init x y direction'\n" RESET);
     return FALSE;
   }
 
-  int x = atoi(arg1);
-  int y = atoi(arg2);
-  char *direction = arg3;
+  x = atoi(arg1);
+  y = atoi(arg2);
+  direction = arg3;
 
-  Position initialPosition;
+
   initialPosition.x = x;
   initialPosition.y = y;
 
-  Direction startingDirection;
+
   if (strcmp(direction, DIRECTION_NORTH) == 0) startingDirection = NORTH;
   else if (strcmp(direction, DIRECTION_SOUTH) == 0) startingDirection = SOUTH;
   else if (strcmp(direction, DIRECTION_EAST) == 0) startingDirection = EAST;

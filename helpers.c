@@ -8,17 +8,12 @@
 
 void readRestOfLine()
 {
-    int ch;
+  int ch;
+  if (!feof(stdin)) {
     while(ch = getc(stdin), ch != EOF && ch != '\n')
     { } /* Gobble each character. */
+  }
 
-    /* Reset the error status of the stream. */
-    clearerr(stdin);
-}
-
-void clearInputStream(char * buffer)
-{
-  /* If there is no newline present in buffer than there must be more in stdin */
-  if ( !strchr(buffer, '\n') )
-    readRestOfLine();
+  /* Reset the error status of the stream. */
+  clearerr(stdin);
 }

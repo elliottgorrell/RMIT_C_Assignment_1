@@ -14,12 +14,7 @@
 #define STUDENT_ID "s3452258"
 #define STUDENT_EMAIL "s3452258@student.rmit.edu.au"
 
-/**
- * Main menu option 2 - show your student information as per the specification.
- *
- * You should change the defines above related to student information and use
- * them when printing.
- */
+void showMainMenu();
 void showStudentInformation();
 void showGameControls();
 
