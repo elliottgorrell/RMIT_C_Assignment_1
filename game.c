@@ -102,8 +102,9 @@ void runGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
 
   Boolean playing = TRUE;
 
+
   while ( playing ) {
-    displayBoard(board, player);
+    Boolean commandSucceeded = FALSE;
     printf("Make a move:\n");
 
     fgets(buffer,15,stdin);
@@ -117,6 +118,7 @@ void runGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
         switch(moveResult){
           case PLAYER_MOVED:
             player->moves += 1;
+            commandSucceeded = TRUE;
             break;
           case OUTSIDE_BOUNDS:
             printf(RED "You can't go outside the map bounds\n" RESET);
@@ -129,10 +131,12 @@ void runGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
 
       else if ( (strcmp(command, COMMAND_TURN_LEFT) == 0) || (strcmp(command, COMMAND_TURN_LEFT_SHORTCUT) == 0) ) {
         turnDirection(player, TURN_LEFT);
+        commandSucceeded = TRUE;
       }
 
       else if ( (strcmp(command, COMMAND_TURN_RIGHT) == 0) || (strcmp(command, COMMAND_TURN_RIGHT_SHORTCUT) == 0) ) {
         turnDirection(player, TURN_RIGHT);
+        commandSucceeded = TRUE;
       }
 
       else if ( (strcmp(command, COMMAND_QUIT) == 0) ) {
@@ -145,6 +149,8 @@ void runGame(Player * player, Cell board[BOARD_HEIGHT][BOARD_WIDTH]) {
         printf(RED "Invalid Command\n" RESET);
       }
     }
+
+    if (commandSucceeded) displayBoard(board, player);
 
     if ( !strchr(buffer, '\n') ) readRestOfLine();
 
